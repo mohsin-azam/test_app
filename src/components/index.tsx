@@ -3,3 +3,7 @@ export { default as ScreenWrapper } from './screen-wrapper';
 export { default as MovieCard } from './movie-card';
 export { default as MovieCategoryCard } from './movie-category-card';
 export { default as SearchBar } from './search-bar';
+export { default as MovieSearchedCard } from './movie-searched-card';
+export { default as Button } from './button';
+export { default as AppText } from './app-text';
+export { default as Header } from './header';

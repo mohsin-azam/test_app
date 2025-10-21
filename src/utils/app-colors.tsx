@@ -5,8 +5,11 @@ const AppColors = {
   inActiveIcon: '#827D88',
   activeIcon: '#ffffff',
   transparent: 'transparent',
-  background: '#DBDBDF',
+  background: 'rgba(242, 242, 246, 1)',
   white: '#ffffff',
   black: 'black',
+  disabled: '#999',
+  border: '#8F8F8F',
+  lightText: '#8F8F8F',
 };
 export default AppColors;

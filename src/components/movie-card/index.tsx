@@ -1,5 +1,11 @@
 import React from 'react';
-import { ImageBackground, ImageSourcePropType, Text, View } from 'react-native';
+import {
+  ImageBackground,
+  ImageSourcePropType,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Images from '~assets/images';
 import styles from './styles';
@@ -7,13 +13,14 @@ import styles from './styles';
 interface MovieCardProps {
   title: string;
   image: ImageSourcePropType;
+  onPress: () => void;
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({ title, image }) => {
+const MovieCard: React.FC<MovieCardProps> = ({ title, image, onPress }) => {
   return (
-    <View style={styles.cardContainer}>
+    <TouchableOpacity style={styles.cardContainer} onPress={onPress}>
       <ImageBackground
-        source={image ? { uri: image } : Images.dummy_movie_image}
+        source={image ? image : Images.dummy_movie_image}
         style={styles.image}
         imageStyle={styles.imageRadius}
       >
@@ -24,7 +31,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ title, image }) => {
           <Text style={styles.title}>{title}</Text>
         </LinearGradient>
       </ImageBackground>
-    </View>
+    </TouchableOpacity>
   );
 };
 

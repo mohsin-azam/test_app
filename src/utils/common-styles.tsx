@@ -133,5 +133,11 @@ const CommonStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  alignSelfCenter: {
+    alignSelf: 'center',
+  },
+  alignItemCenter: {
+    alignItems: 'center',
+  },
 });
 export default CommonStyles;

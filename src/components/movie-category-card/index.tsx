@@ -6,7 +6,7 @@ import styles from './styles';
 
 interface CategoryCardProps {
   title: string;
-  image: ImageSourcePropType;
+  image?: ImageSourcePropType;
 }
 
 const MovieCategoryCard: React.FC<CategoryCardProps> = ({ title, image }) => {

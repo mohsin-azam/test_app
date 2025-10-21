@@ -25,5 +25,16 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingVertical: height(4),
   },
+  topResultsContainer: {
+    paddingVertical: height(1.5),
+    borderBottomWidth: width(0.4),
+    borderBottomColor: 'rgba(0, 0, 0, 0.11)',
+    marginBottom: height(2),
+  },
+  topResultsText: {
+    fontSize: width(3),
+    fontFamily: AppFonts.poppinsRegular,
+    fontWeight: '700',
+  },
 });
 export default styles;
