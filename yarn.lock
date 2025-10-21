@@ -1616,6 +1616,13 @@
   dependencies:
     "@react-native-vector-icons/common" "^12.3.0"
 
+"@react-native-vector-icons/material-icons@^12.3.0":
+  version "12.3.0"
+  resolved "https://registry.yarnpkg.com/@react-native-vector-icons/material-icons/-/material-icons-12.3.0.tgz#e93aeffef628d651273d2c2707c2e51f372f2f93"
+  integrity sha512-W9rhgfc8zKKXhZa/099un/RSNFgO6aHhJR2r6rodvTlO+ZRXq2GbU38CMBwhomJxyErcfmlR7En6wSdtLykYVQ==
+  dependencies:
+    "@react-native-vector-icons/common" "^12.3.0"
+
 "@react-native/assets-registry@0.81.4":
   version "0.81.4"
   resolved "https://registry.yarnpkg.com/@react-native/assets-registry/-/assets-registry-0.81.4.tgz#bfa477c8e9d54d6ef4ab6e81b886d5be13c09fbd"
@@ -5783,6 +5790,11 @@ react-native-keyboard-aware-scroll-view@^0.9.5:
   dependencies:
     prop-types "^15.6.2"
     react-native-iphone-x-helper "^1.0.3"
+
+react-native-linear-gradient@^2.8.3:
+  version "2.8.3"
+  resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.8.3.tgz#9a116649f86d74747304ee13db325e20b21e564f"
+  integrity sha512-KflAXZcEg54PXkLyflaSZQ3PJp4uC4whM7nT/Uot9m0e/qxFV3p6uor1983D1YOBJbJN7rrWdqIjq0T42jOJyA==
 
 react-native-safe-area-context@^5.5.2:
   version "5.6.1"

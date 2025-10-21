@@ -17,6 +17,22 @@ const AppFonts = {
   poppinsSemiBoldItalic: 'Poppins-SemiBoldItalic',
   poppinsThin: 'Poppins-Thin',
   poppinsThinItalic: 'Poppins-ThinItalic',
+  robotoSerifBold: 'RobotoSerif-Bold',
+  robotoSerifRegular: 'RobotoSerif-Regular',
+  robotoSerifBlack: 'RobotoSerif-Black',
+  RobotoSerifMedium: 'RobotoSerif-Medium',
+  robotoThinItalic: 'Roboto-ThinItalic',
+  robotoThin: 'Roboto-Thin',
+  robotoMediumItalic: 'Roboto-MediumItalic',
+  robotoRegular: 'Roboto-Regular',
+  robotoMedium: 'Roboto-Medium',
+  robotoLightItalic: 'Roboto-LightItalic',
+  robotoLight: 'Roboto-Light',
+  robotoItalic: 'Roboto-Italic',
+  robotoBoldItalic: 'Roboto-BoldItalic',
+  robotoBold: 'Roboto-Bold',
+  robotoBlackItalic: 'Roboto-BlackItalic',
+  robotoBlack: 'Roboto-Black',
 };
 
 export default AppFonts;

@@ -1,17 +1,17 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { configSliceReducer } from './slices/config';
-import { tempSliceReducer, userSliceReducer } from './slices/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import {
-  persistStore,
-  persistReducer,
   FLUSH,
-  REHYDRATE,
   PAUSE,
   PERSIST,
+  persistReducer,
+  persistStore,
   PURGE,
   REGISTER,
+  REHYDRATE,
 } from 'redux-persist';
+import { configSliceReducer } from './slices/config';
+import { userSliceReducer } from './slices/user';
 
 const persistConfig = {
   key: 'root',
@@ -22,7 +22,6 @@ const persistConfig = {
 
 const reducers: any = {
   user: userSliceReducer,
-  temp: tempSliceReducer,
   config: configSliceReducer,
 };
 const rootReducer = combineReducers(reducers);

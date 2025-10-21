@@ -1,15 +1,14 @@
-// App.js
-import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons';
-import { WatchScreen } from '~screens/app';
+import * as React from 'react';
+import { Image, Text, View } from 'react-native';
+import { Icons } from '~assets';
 import ScreenNames from '~routes/routes';
+import { WatchScreen } from '~screens/app';
 import { AppColors } from '~utils';
-import { width } from '~utils/dimensions';
+import AppFonts from '~utils/app-fonts';
+import { height, width } from '~utils/dimensions';
+import styles from './styles';
 
-// Simple screens
 function DashboardScreen() {
   return (
     <View style={styles.screen}>
@@ -42,18 +41,18 @@ export default function App() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#2E2739',
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          position: 'absolute',
-          overflow: 'hidden',
-          height: 70,
+          backgroundColor: AppColors.primary,
+          borderTopLeftRadius: width(7),
+          borderTopRightRadius: width(7),
+          height: width(18),
+          paddingVertical: height(1),
         },
-        tabBarActiveTintColor: '#FFD700', // gold color for active tab
-        tabBarInactiveTintColor: '#B0A8B9',
+        tabBarActiveTintColor: AppColors.activeIcon,
+        tabBarInactiveTintColor: AppColors.inActiveIcon,
         tabBarLabelStyle: {
-          fontSize: 12,
-          paddingBottom: 5,
+          fontSize: width(2.8),
+          fontFamily: AppFonts.robotoBold,
+          paddingBottom: height(2),
         },
       }}
     >
@@ -61,8 +60,19 @@ export default function App() {
         name="Dashboard"
         component={DashboardScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialDesignIcons name="dashboard" color={color} size={size} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Image
+              source={Icons.dashboard}
+              resizeMode="contain"
+              style={[
+                styles.icon,
+                {
+                  tintColor: focused
+                    ? AppColors.activeIcon
+                    : AppColors.inActiveIcon,
+                },
+              ]}
+            />
           ),
         }}
       />
@@ -70,8 +80,20 @@ export default function App() {
         name={ScreenNames.WATCH}
         component={WatchScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialDesignIcons name="tv" color={color} size={size} />
+          tabBarIcon: ({ color, size, focused }) => (
+            // <MaterialDesignIcons name="television" color={color} size={size} />
+            <Image
+              source={Icons.watch}
+              resizeMode="contain"
+              style={[
+                styles.icon,
+                {
+                  tintColor: focused
+                    ? AppColors.activeIcon
+                    : AppColors.inActiveIcon,
+                },
+              ]}
+            />
           ),
         }}
       />
@@ -79,11 +101,18 @@ export default function App() {
         name="Media Library"
         component={MediaLibraryScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialDesignIcons
-              name="video-library"
-              color={color}
-              size={size}
+          tabBarIcon: ({ color, size, focused }) => (
+            <Image
+              source={Icons.media}
+              resizeMode="contain"
+              style={[
+                styles.icon,
+                {
+                  tintColor: focused
+                    ? AppColors.activeIcon
+                    : AppColors.inActiveIcon,
+                },
+              ]}
             />
           ),
         }}
@@ -92,24 +121,22 @@ export default function App() {
         name="More"
         component={MoreScreen}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialDesignIcons name="more-horiz" color={color} size={size} />
+          tabBarIcon: ({ color, size, focused }) => (
+            <Image
+              source={Icons.more}
+              resizeMode="contain"
+              style={[
+                styles.icon,
+                {
+                  tintColor: focused
+                    ? AppColors.activeIcon
+                    : AppColors.inActiveIcon,
+                },
+              ]}
+            />
           ),
         }}
       />
     </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: AppColors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    color: AppColors.secondary,
-    fontSize: width(4),
-  },
-});
