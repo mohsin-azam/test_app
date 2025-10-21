@@ -33,10 +33,11 @@ const Header: React.FC<HeaderProps> = ({
       <TouchableOpacity
         activeOpacity={0.7}
         onPress={onBackPress}
-        style={styles.backButton}
+        style={styles.equalizer}
       >
         <MaterialIcons name="arrow-back-ios" size={width(5.5)} color={color} />
       </TouchableOpacity>
+
       <View style={CommonStyles.alignItemCenter}>
         <AppText color={AppColors.black} size={4} fontFamily={'poppinsMedium'}>
           The King’s Man
@@ -45,6 +46,7 @@ const Header: React.FC<HeaderProps> = ({
           In theaters december 22, 2021
         </AppText>
       </View>
+      <View style={styles?.equalizer} />
     </View>
   );
 };

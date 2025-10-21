@@ -11,5 +11,7 @@ const AppColors = {
   disabled: '#999',
   border: '#8F8F8F',
   lightText: '#8F8F8F',
+  inActiveSmallButtons: 'rgba(166, 166, 166, 0.1)',
+  selectedBorder: '#61C3F2',
 };
 export default AppColors;
