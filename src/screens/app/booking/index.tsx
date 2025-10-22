@@ -1,32 +1,23 @@
 import { Armchair, Minus, Plus, X } from 'lucide-react-native';
 import React, { useState } from 'react';
-import {
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { AppText, Header, ScreenWrapper } from '~components';
 import { AppColors } from '~utils';
-import { height, width } from '~utils/dimensions';
+import { width } from '~utils/dimensions';
 import { navProps } from '~utils/globalProps';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+import styles from './styles';
 
 const CinemaSeatBooking = ({ navigation }: navProps) => {
-  const insets = useSafeAreaInsets();
-  const [zoom, setZoom] = useState(0.7);
+  const [zoom, setZoom] = useState(0.5);
   const [selectedSeats, setSelectedSeats] = useState([]);
 
   // Define seat layout for each row
   const seatLayout = [
-    { row: 1, seats: 18, leftGap: 3, rightGap: 3 },
-    { row: 2, seats: 22, leftGap: 1, rightGap: 1 },
-    { row: 3, seats: 22, leftGap: 1, rightGap: 1 },
-    { row: 4, seats: 22, leftGap: 1, rightGap: 1 },
+    { row: 1, seats: 24, leftGap: 0, rightGap: 0 },
+
+    { row: 2, seats: 24, leftGap: 0, rightGap: 0 },
+    { row: 3, seats: 24, leftGap: 0, rightGap: 0 },
+    { row: 4, seats: 24, leftGap: 0, rightGap: 0 },
     { row: 5, seats: 24, leftGap: 0, rightGap: 0 },
     { row: 6, seats: 24, leftGap: 0, rightGap: 0 },
     { row: 7, seats: 24, leftGap: 0, rightGap: 0 },
@@ -46,9 +37,23 @@ const CinemaSeatBooking = ({ navigation }: navProps) => {
     '3-4',
     '2-3',
   ];
-
-  const handleSeatPress = (seatId, isBooked, rowNum) => {
+  const inVisibleSeats = [
+    '1-1',
+    '1-2',
+    '1-3',
+    '1-23',
+    '1-24',
+    '1-25',
+    '2-1',
+    '2-24',
+    '3-1',
+    '3-24',
+    '4-1',
+    '4-24',
+  ];
+  const handleSeatPress = (seatId, isBooked, rowNum, isInVisible) => {
     if (isBooked) return;
+    if (isInVisible) return;
 
     setSelectedSeats(prev => {
       if (prev.includes(seatId)) {
@@ -59,10 +64,17 @@ const CinemaSeatBooking = ({ navigation }: navProps) => {
     });
   };
 
-  const getSeatColor = (seatId: any, rowNum: any, isBooked: any) => {
+  const getSeatColor = (
+    seatId: any,
+    rowNum: any,
+    isBooked: any,
+    isInVisible: any,
+  ) => {
     if (selectedSeats.includes(seatId)) return '#DAA520';
     if (isBooked) return '#D1D5DB';
+    if (isInVisible) return AppColors.transparent;
     if (rowNum === 10) return '#6366F1';
+
     return AppColors.button;
   };
 
@@ -100,87 +112,70 @@ const CinemaSeatBooking = ({ navigation }: navProps) => {
     return rowCounts;
   };
 
-  const renderSeats = rowData => {
-    const { row, seats, leftGap, rightGap } = rowData;
+  const renderSeats = (rowData: any) => {
+    const { row, seats } = rowData;
     const seatElements = [];
 
-    // Add left gap
-    for (let i = 0; i < leftGap; i++) {
-      seatElements.push(
-        <View key={`left-gap-${i}`} style={{ width: 18 * zoom }} />,
-      );
-    }
+    // Define seat groups
+    const leftBlockCount = 5;
+    const middleBlockCount = 14;
+    const rightBlockCount = 5;
 
-    // Add seats with center aisle
-    const leftSeats = Math.floor(seats / 2);
+    // Helper to render a block of seats
+    const renderBlock = (startIndex: number, count: number) => {
+      const elements = [];
+      for (let i = startIndex; i < startIndex + count; i++) {
+        const seatId = `${row}-${i}`;
+        const isBooked = bookedSeats.includes(seatId);
+        const isInVisible = inVisibleSeats.includes(seatId);
 
-    // Left side seats
-    for (let i = 1; i <= leftSeats; i++) {
-      const seatId = `${row}-${i}`;
-      const isBooked = bookedSeats.includes(seatId);
+        elements.push(
+          <TouchableOpacity
+            key={seatId}
+            onPress={() => handleSeatPress(seatId, isBooked, row, isInVisible)}
+            style={[styles.seatContainer, { padding: 4 * zoom }]}
+            activeOpacity={isBooked ? 1 : 0.6}
+          >
+            <Armchair
+              size={20 * zoom}
+              color={getSeatColor(seatId, row, isBooked, isInVisible)}
+              fill={getSeatColor(seatId, row, isBooked, isInVisible)}
+            />
+          </TouchableOpacity>,
+        );
+      }
+      return elements;
+    };
 
-      seatElements.push(
-        <TouchableOpacity
-          key={seatId}
-          onPress={() => handleSeatPress(seatId, isBooked, row)}
-          style={[styles.seatContainer, { padding: 4 * zoom }]}
-          activeOpacity={isBooked ? 1 : 0.6}
-        >
-          <Armchair
-            size={20 * zoom}
-            color={getSeatColor(seatId, row, isBooked)}
-            fill={getSeatColor(seatId, row, isBooked)}
-          />
-          {/* <ChairSvg
-            width={18 * zoom}
-            height={17 * zoom}
-            fill={getSeatColor(seatId, row, isBooked)}
-          /> */}
-        </TouchableOpacity>,
-      );
-    }
+    // 5 seats (left block)
+    seatElements.push(...renderBlock(1, leftBlockCount));
 
-    // Center aisle
+    // First aisle gap
     seatElements.push(
-      <View key={`aisle-${row}`} style={{ width: 24 * zoom }} />,
+      <View key={`gap1-${row}`} style={{ width: 24 * zoom }} />,
     );
 
-    // Right side seats
-    for (let i = leftSeats + 1; i <= seats; i++) {
-      const seatId = `${row}-${i}`;
-      const isBooked = bookedSeats.includes(seatId);
+    // 14 seats (middle block)
+    seatElements.push(...renderBlock(leftBlockCount + 1, middleBlockCount));
 
-      seatElements.push(
-        <TouchableOpacity
-          key={seatId}
-          onPress={() => handleSeatPress(seatId, isBooked, row)}
-          style={[styles.seatContainer, { padding: 4 * zoom }]}
-          activeOpacity={isBooked ? 1 : 0.6}
-        >
-          <Armchair
-            size={20 * zoom}
-            color={getSeatColor(seatId, row, isBooked)}
-            fill={getSeatColor(seatId, row, isBooked)}
-          />
-        </TouchableOpacity>,
-      );
-    }
+    // Second aisle gap
+    seatElements.push(
+      <View key={`gap2-${row}`} style={{ width: 24 * zoom }} />,
+    );
 
-    // Add right gap
-    for (let i = 0; i < rightGap; i++) {
-      seatElements.push(
-        <View key={`right-gap-${i}`} style={{ width: 18 * zoom }} />,
-      );
-    }
+    // 5 seats (right block)
+    seatElements.push(
+      ...renderBlock(leftBlockCount + middleBlockCount + 1, rightBlockCount),
+    );
 
     return seatElements;
   };
 
   return (
-    <ScreenWrapper statusBarColor={AppColors.white} transclucent>
-      <View style={{ marginTop: insets.top }}>
+    <ScreenWrapper statusBarColor={AppColors.white}>
+      <View>
         <Header
-          title="Movie Details"
+          title="The King’s Man"
           subTitle="March 5, 2021  I  12:30 hall 1"
           onBackPress={() => navigation?.goBack()}
         />
@@ -394,161 +389,5 @@ const CinemaSeatBooking = ({ navigation }: navProps) => {
     </ScreenWrapper>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-
-  seatSelectionContainer: {
-    position: 'relative',
-    height: height(50),
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  contentContainer: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  screenContainer: {
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  screen: {
-    width: SCREEN_WIDTH - 60,
-    backgroundColor: '#E5E7EB',
-    borderColor: '#60A5FA',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  screenText: {
-    fontWeight: '600',
-    color: '#9CA3AF',
-    letterSpacing: 2,
-  },
-  seatsContainer: {
-    alignItems: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  rowLabel: {
-    fontWeight: '700',
-    color: '#374151',
-    textAlign: 'right',
-  },
-  seatsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  seat: {
-    // Dynamic styles applied inline
-  },
-  seatContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  zoomControls: {
-    position: 'absolute',
-    bottom: height(2),
-    right: width(4),
-    gap: width(2),
-    flexDirection: 'row',
-  },
-  zoomButton: {
-    width: width(8),
-    height: width(8),
-    borderRadius: width(4),
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  zoomButtonDisabled: {
-    opacity: 0.5,
-  },
-  bottomSection: {
-    flex: 1,
-    backgroundColor: AppColors.white,
-    paddingHorizontal: width(5),
-    paddingTop: height(4),
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  legendContainer: {
-    // marginBottom: 16,
-    // backgroundColor: 'blue',
-  },
-  legendRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  legendBox: {
-    marginRight: width(2),
-  },
-
-  selectedContainer: {
-    marginVertical: height(4),
-  },
-  selectedInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#F3F4F6',
-    paddingVertical: height(1),
-    paddingHorizontal: width(3),
-    borderRadius: width(3),
-    width: width(30),
-  },
-
-  clearButton: {
-    // padding: 4,
-  },
-  paymentContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: width(3),
-    marginTop: height(1),
-  },
-  totalContainer: {
-    backgroundColor: '#F3F4F6',
-    height: height(7),
-    width: width(27),
-    borderRadius: width(2.5),
-    paddingHorizontal: 16,
-    justifyContent: 'center',
-  },
-
-  proceedButton: {
-    flex: 2,
-    backgroundColor: AppColors.button,
-    // paddingVertical: 18,
-    height: height(7),
-    borderRadius: width(2.5),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  proceedButtonDisabled: {
-    opacity: 0.5,
-  },
-});
 
 export default CinemaSeatBooking;

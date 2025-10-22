@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
   footerButtonContainer: {
     alignItems: 'center',
-    marginBottom: height(3),
+    marginBottom: height(5),
   },
   growZero: {
     flexGrow: 0,

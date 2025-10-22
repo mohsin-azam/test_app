@@ -38,7 +38,7 @@ function AppContent() {
         templateFileName="App.tsx"
         safeAreaInsets={safeAreaInsets}
       />
-      <Text>Hello</Text>
+      <Text>Hello World!</Text>
     </View>
   );
 }

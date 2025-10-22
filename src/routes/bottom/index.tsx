@@ -1,6 +1,6 @@
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import * as React from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, Text, View, Platform } from 'react-native';
 import { Icons } from '~assets';
 import ScreenNames from '~routes/routes';
 import { WatchScreen } from '~screens/app';
@@ -8,6 +8,8 @@ import { AppColors } from '~utils';
 import AppFonts from '~utils/app-fonts';
 import { height, width } from '~utils/dimensions';
 import styles from './styles';
+
+const Tab = createBottomTabNavigator();
 
 function DashboardScreen() {
   return (
@@ -33,27 +35,28 @@ function MoreScreen() {
   );
 }
 
-const Tab = createBottomTabNavigator();
-
 export default function App() {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarHideOnKeyboard: true,
         headerShown: false,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: AppColors.primary,
           borderTopLeftRadius: width(7),
           borderTopRightRadius: width(7),
-          height: width(18),
-          paddingVertical: height(1),
+          height: Platform.OS === 'ios' ? height(10) : height(9),
+          paddingBottom: Platform.OS === 'ios' ? height(3) : height(2),
+          paddingTop: height(2),
+          borderTopWidth: 0,
+          elevation: 10,
         },
         tabBarActiveTintColor: AppColors.activeIcon,
         tabBarInactiveTintColor: AppColors.inActiveIcon,
         tabBarLabelStyle: {
-          fontSize: width(2.8),
+          fontSize: width(2.5),
           fontFamily: AppFonts.robotoBold,
-          paddingBottom: height(2),
+          marginTop: height(0.5),
         },
       }}
     >
@@ -61,79 +64,77 @@ export default function App() {
         name="Dashboard"
         component={DashboardScreen}
         options={{
-          tabBarIcon: ({ color, size, focused }) => (
+          tabBarIcon: ({ focused }) => (
             <Image
               source={Icons.dashboard}
               resizeMode="contain"
-              style={[
-                styles.icon,
-                {
-                  tintColor: focused
-                    ? AppColors.activeIcon
-                    : AppColors.inActiveIcon,
-                },
-              ]}
+              style={{
+                width: width(4.5),
+                height: width(4.5),
+                tintColor: focused
+                  ? AppColors.activeIcon
+                  : AppColors.inActiveIcon,
+              }}
             />
           ),
         }}
       />
+
       <Tab.Screen
         name={ScreenNames.WATCH}
         component={WatchScreen}
         options={{
-          tabBarIcon: ({ color, size, focused }) => (
-            // <MaterialDesignIcons name="television" color={color} size={size} />
+          tabBarIcon: ({ focused }) => (
             <Image
               source={Icons.watch}
               resizeMode="contain"
-              style={[
-                styles.icon,
-                {
-                  tintColor: focused
-                    ? AppColors.activeIcon
-                    : AppColors.inActiveIcon,
-                },
-              ]}
+              style={{
+                width: width(4.5),
+                height: width(4.5),
+                tintColor: focused
+                  ? AppColors.activeIcon
+                  : AppColors.inActiveIcon,
+              }}
             />
           ),
         }}
       />
+
       <Tab.Screen
         name="Media Library"
         component={MediaLibraryScreen}
         options={{
-          tabBarIcon: ({ color, size, focused }) => (
+          tabBarIcon: ({ focused }) => (
             <Image
               source={Icons.media}
               resizeMode="contain"
-              style={[
-                styles.icon,
-                {
-                  tintColor: focused
-                    ? AppColors.activeIcon
-                    : AppColors.inActiveIcon,
-                },
-              ]}
+              style={{
+                width: width(4.5),
+                height: width(4.5),
+                tintColor: focused
+                  ? AppColors.activeIcon
+                  : AppColors.inActiveIcon,
+              }}
             />
           ),
         }}
       />
+
       <Tab.Screen
         name="More"
         component={MoreScreen}
         options={{
-          tabBarIcon: ({ color, size, focused }) => (
+          tabBarIcon: ({ focused }) => (
             <Image
               source={Icons.more}
               resizeMode="contain"
-              style={[
-                styles.icon,
-                {
-                  tintColor: focused
-                    ? AppColors.activeIcon
-                    : AppColors.inActiveIcon,
-                },
-              ]}
+              style={{
+                width: width(4.5),
+                height: width(4.5),
+                tintColor: focused
+                  ? AppColors.activeIcon
+                  : AppColors.inActiveIcon,
+              }}
             />
           ),
         }}

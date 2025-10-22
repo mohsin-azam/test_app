@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { AppColors } from '~utils';
 import AppFonts from '~utils/app-fonts';
 import { height, width } from '~utils/dimensions';
@@ -6,29 +6,41 @@ import { height, width } from '~utils/dimensions';
 const styles = StyleSheet.create({
   cardContainer: {
     borderRadius: width(4),
-    overflow: 'hidden',
     backgroundColor: '#000',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
   },
   image: {
     width: '100%',
     height: height(25),
+    borderRadius: width(4),
+    overflow: 'hidden',
     justifyContent: 'flex-end',
   },
   imageRadius: {
-    borderRadius: 16,
+    borderRadius: width(4),
   },
-  gradient: {
-    padding: height(4),
-    justifyContent: 'flex-end',
+  gradientOverlay: {
+    ...StyleSheet.absoluteFillObject,
   },
   title: {
     color: AppColors.white,
     fontSize: width(5),
-    fontFamily: AppFonts.poppinsRegular,
-    fontWeight: '500',
+    fontFamily: AppFonts.poppinsMedium,
+    fontWeight: '600',
     position: 'absolute',
-    left: width(5),
     bottom: width(5),
+    left: width(5),
   },
 });
+
 export default styles;

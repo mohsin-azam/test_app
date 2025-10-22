@@ -1,11 +1,5 @@
 import { MaterialIcons } from '@react-native-vector-icons/material-icons';
-import React, {
-  Activity,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -13,6 +7,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Images from '~assets/images';
+import {
+  getMovieCategories,
+  getUpcomingMovies,
+  searchMovies,
+} from '~backend/api';
 import {
   MovieCard,
   MovieCategoryCard,
@@ -21,17 +21,11 @@ import {
   SearchBar,
   Spacer,
 } from '~components';
-import Images from '~assets/images';
-import {
-  getMovieCategories,
-  getUpcomingMovies,
-  searchMovies,
-} from '~backend/api';
+import ScreenNames from '~routes/routes';
 import { AppColors } from '~utils';
 import { height, width } from '~utils/dimensions';
 import { Movie, MovieCategory, navProps } from '~utils/globalProps';
 import styles from './styles';
-import ScreenNames from '~routes/routes';
 
 export default function WatchScreen({ navigation }: navProps) {
   const [isCategory, setIsCategory] = useState(false);

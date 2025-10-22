@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Images from '~assets/images';
@@ -18,19 +19,25 @@ interface MovieCardProps {
 
 const MovieCard: React.FC<MovieCardProps> = ({ title, image, onPress }) => {
   return (
-    <TouchableOpacity style={styles.cardContainer} onPress={onPress}>
-      <ImageBackground
-        source={image ? image : Images.dummy_movie_image}
-        style={styles.image}
-        imageStyle={styles.imageRadius}
-      >
-        <LinearGradient
-          colors={['transparent', 'rgba(0,0,0,0.8)']}
-          style={styles.gradient}
+    <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
+      <View style={styles.cardContainer}>
+        <ImageBackground
+          source={image || Images.dummy_movie_image}
+          style={styles.image}
+          imageStyle={styles.imageRadius}
         >
+          {/* Gradient overlay */}
+          <LinearGradient
+            colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.9)']}
+            start={{ x: 0, y: 0.2 }}
+            end={{ x: 0, y: 1 }}
+            style={styles.gradientOverlay}
+          />
+
+          {/* Text should be placed AFTER gradient to stay visible */}
           <Text style={styles.title}>{title}</Text>
-        </LinearGradient>
-      </ImageBackground>
+        </ImageBackground>
+      </View>
     </TouchableOpacity>
   );
 };
