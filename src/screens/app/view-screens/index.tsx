@@ -8,11 +8,16 @@ import { useState } from 'react';
 import { height, width } from '~utils/dimensions';
 import Images from '~assets/images';
 import ScreenNames from '~routes/routes';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function ViewScreens({ navigation }: navProps) {
   const [selectedDate, setSelectedDate] = useState('1');
+  const [selectedSession, setSelectedSession] = useState<string | null>(null);
+  const insets = useSafeAreaInsets();
+
   return (
     <ScreenWrapper
+      transclucent
       statusBarColor={AppColors.white}
       footerUnScrollable={() => {
         return (
@@ -27,11 +32,14 @@ export default function ViewScreens({ navigation }: navProps) {
         );
       }}
     >
-      <Header
-        title="Movie Details"
-        subTitle="In theaters december 22, 2021"
-        onBackPress={() => navigation?.goBack()}
-      />
+      <View style={{ marginTop: insets.top }}>
+        <Header
+          title="Movie Details"
+          subTitle="In theaters december 22, 2021"
+          onBackPress={() => navigation?.goBack()}
+        />
+      </View>
+
       <View style={styles.container}>
         <Spacer vertical={height(15)} />
         <AppText size={4} fontFamily="poppinsMedium" color={AppColors.black}>
@@ -84,45 +92,53 @@ export default function ViewScreens({ navigation }: navProps) {
           ItemSeparatorComponent={() => {
             return <View style={styles.dateListGap} />;
           }}
-          renderItem={({ item }) => (
-            <View>
-              <View style={styles.horizontalTexts}>
-                <AppText
-                  size={3}
-                  color={AppColors.black}
-                  fontFamily="poppinsMedium"
+          renderItem={({ item }) => {
+            const isActive = selectedSession === item.id;
+            return (
+              <View>
+                <View style={styles.horizontalTexts}>
+                  <AppText
+                    size={3}
+                    color={AppColors.black}
+                    fontFamily="poppinsMedium"
+                  >
+                    {item.time}
+                  </AppText>
+                  <AppText
+                    size={3}
+                    color={AppColors.lightText}
+                    fontFamily="poppinsRegular"
+                  >
+                    {'  '}
+                    {item.hall}
+                  </AppText>
+                </View>
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() => setSelectedSession(item.id)}
+                  style={[
+                    styles.sessionCard,
+                    {
+                      borderColor: isActive
+                        ? AppColors.selectedBorder
+                        : AppColors.border,
+                    },
+                  ]}
                 >
-                  {item.time}
-                </AppText>
-                <AppText
-                  size={3}
-                  color={AppColors.lightText}
-                  fontFamily="poppinsRegular"
-                >
-                  {'  '}
-                  {item.hall}
-                </AppText>
-              </View>
-              <TouchableOpacity
-                activeOpacity={0.9}
-                style={[
-                  styles.sessionCard,
-                  { borderColor: AppColors.selectedBorder },
-                ]}
-              >
-                <Image
-                  source={Images.seats}
-                  resizeMode="contain"
-                  style={styles.sessionImage}
-                />
-              </TouchableOpacity>
+                  <Image
+                    source={Images.seats}
+                    resizeMode="contain"
+                    style={styles.sessionImage}
+                  />
+                </TouchableOpacity>
 
-              <Text style={styles.priceText}>
-                From <Text style={styles.bold}>{item.price}</Text> or{' '}
-                <Text style={styles.bold}>{item.bonus} bonus</Text>
-              </Text>
-            </View>
-          )}
+                <Text style={styles.priceText}>
+                  From <Text style={styles.bold}>{item.price}</Text> or{' '}
+                  <Text style={styles.bold}>{item.bonus} bonus</Text>
+                </Text>
+              </View>
+            );
+          }}
         />
       </View>
     </ScreenWrapper>

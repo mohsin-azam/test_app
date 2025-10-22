@@ -1,12 +1,12 @@
+import MaterialIcons from '@react-native-vector-icons/material-icons';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { AppText, Button, ScreenWrapper, Spacer } from '~components';
+import ScreenNames from '~routes/routes';
+import { AppColors } from '~utils';
+import { height, width } from '~utils/dimensions';
 import { Movie, navProps } from '~utils/globalProps';
 import styles from './styles';
-import { height, width } from '~utils/dimensions';
-import MaterialIcons from '@react-native-vector-icons/material-icons';
-import { AppColors } from '~utils';
-import LinearGradient from 'react-native-linear-gradient';
-import ScreenNames from '~routes/routes';
 
 export default function MovieDetail({ navigation, route }: navProps) {
   const details: Movie = route?.params?.details;
@@ -16,6 +16,7 @@ export default function MovieDetail({ navigation, route }: navProps) {
     { name: 'Science', color: 'rgba(86, 76, 163, 1)' },
     { name: 'Fiction', color: 'rgba(205, 157, 15, 1)' },
   ];
+
   return (
     <ScreenWrapper
       transclucent

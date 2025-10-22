@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
   },
   dateList: {
     paddingVertical: height(1),
+    paddingRight: width(5),
     // backgroundColor: 'pink',
   },
   dateButton: {
@@ -26,6 +27,7 @@ const styles = StyleSheet.create({
   sessionList: {
     marginTop: height(2),
     paddingBottom: height(1),
+    paddingRight: width(5),
   },
   sessionCard: {
     backgroundColor: AppColors.white,

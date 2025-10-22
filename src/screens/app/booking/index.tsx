@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText, Header, ScreenWrapper } from '~components';
 import { AppColors } from '~utils';
 import { height, width } from '~utils/dimensions';
@@ -16,6 +17,7 @@ import { navProps } from '~utils/globalProps';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const CinemaSeatBooking = ({ navigation }: navProps) => {
+  const insets = useSafeAreaInsets();
   const [zoom, setZoom] = useState(0.7);
   const [selectedSeats, setSelectedSeats] = useState([]);
 
@@ -175,12 +177,14 @@ const CinemaSeatBooking = ({ navigation }: navProps) => {
   };
 
   return (
-    <ScreenWrapper statusBarColor={AppColors.white}>
-      <Header
-        title="Movie Details"
-        subTitle="March 5, 2021  I  12:30 hall 1"
-        onBackPress={() => navigation?.goBack()}
-      />
+    <ScreenWrapper statusBarColor={AppColors.white} transclucent>
+      <View style={{ marginTop: insets.top }}>
+        <Header
+          title="Movie Details"
+          subTitle="March 5, 2021  I  12:30 hall 1"
+          onBackPress={() => navigation?.goBack()}
+        />
+      </View>
 
       {/* Seat Selection Area */}
       <View style={styles.seatSelectionContainer}>
@@ -394,7 +398,6 @@ const CinemaSeatBooking = ({ navigation }: navProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
 
   seatSelectionContainer: {
@@ -522,7 +525,8 @@ const styles = StyleSheet.create({
   paymentContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: width(3),
+    marginTop: height(1),
   },
   totalContainer: {
     backgroundColor: '#F3F4F6',
@@ -531,18 +535,8 @@ const styles = StyleSheet.create({
     borderRadius: width(2.5),
     paddingHorizontal: 16,
     justifyContent: 'center',
-    // borderRadius: 12,
   },
-  // totalLabel: {
-  //   fontSize: 12,
-  //   color: '#6B7280',
-  //   marginBottom: 2,
-  // },
-  // totalPrice: {
-  //   fontSize: 24,
-  //   fontWeight: '700',
-  //   color: '#000',
-  // },
+
   proceedButton: {
     flex: 2,
     backgroundColor: AppColors.button,
