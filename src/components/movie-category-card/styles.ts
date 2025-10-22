@@ -4,12 +4,11 @@ import { width } from '~utils/dimensions';
 const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
-    // margin: 8,
     borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: '#000',
-    elevation: 4, // for Android shadow
-    shadowColor: '#000', // for iOS shadow
+    elevation: 4,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,

@@ -1,5 +1,5 @@
-import React, { FC } from "react";
-import { View, ViewStyle } from "react-native";
+import React, { FC } from 'react';
+import { View } from 'react-native';
 
 interface SpacerProps {
   horizontal?: number;

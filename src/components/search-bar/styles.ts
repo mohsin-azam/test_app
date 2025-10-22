@@ -9,10 +9,8 @@ const styles = StyleSheet.create({
     borderRadius: width(7),
     paddingHorizontal: width(3),
     paddingVertical: height(1.8),
-    // marginBottom: 16,
     backgroundColor: AppColors.background,
   },
-  //
   leftIcon: {
     marginHorizontal: width(1.5),
   },
@@ -23,7 +21,6 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
   },
   iconRight: {
-    // marginLeft: 6,
     tintColor: AppColors.black,
     height: width(7),
     width: width(7),

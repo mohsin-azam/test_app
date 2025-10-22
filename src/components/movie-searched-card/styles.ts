@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { AppColors } from '~utils';
 import AppFonts from '~utils/app-fonts';
-import { height, width } from '~utils/dimensions';
+import { width } from '~utils/dimensions';
 
 const styles = StyleSheet.create({
   cardContainer: {
@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    // backgroundColor: 'pink',
     flex: 1,
   },
 });

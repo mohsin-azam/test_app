@@ -3,7 +3,6 @@ import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import AppText from '~components/app-text';
 import { AppColors, CommonStyles } from '~utils';
-import AppFonts from '~utils/app-fonts';
 import { width } from '~utils/dimensions';
 import styles from './styles';
 
