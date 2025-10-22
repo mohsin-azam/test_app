@@ -30,3 +30,17 @@ export const searchMovies = async (query: string): Promise<Movie[]> => {
   });
   return response.data.results;
 };
+export const getMovieTrailer = async (movieId: number) => {
+  try {
+    const response = await API_CLIENT.get(`/movie/${movieId}/videos`);
+    console.log('response=', response);
+
+    const trailers = response.data.results.filter(
+      (v: any) => v.type === 'Trailer' && v.site === 'YouTube',
+    );
+    return trailers.length > 0 ? trailers[0].key : null;
+  } catch (error) {
+    console.log('Error fetching trailer:', error);
+    return null;
+  }
+};

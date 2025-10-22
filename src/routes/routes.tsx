@@ -4,5 +4,6 @@ const ScreenNames = {
   BOOKING: 'Booking',
   MOVIE_DETAIL: 'MovieDetail',
   VIEW_SCREENS: 'ViewScreens',
+  WATCH_TRAILER: 'WatchTrailer',
 };
 export default ScreenNames;

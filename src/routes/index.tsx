@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 import MyTabBar from './bottom';
 import ScreenNames from './routes';
-import { Booking, MovieDetail, ViewScreens } from '~screens/app';
+import { Booking, MovieDetail, ViewScreens, WatchTrailer } from '~screens/app';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +18,10 @@ export default function Routes() {
         <Stack.Screen name={ScreenNames.BOOKING} component={Booking} />
         <Stack.Screen name={ScreenNames.MOVIE_DETAIL} component={MovieDetail} />
         <Stack.Screen name={ScreenNames.VIEW_SCREENS} component={ViewScreens} />
+        <Stack.Screen
+          name={ScreenNames.WATCH_TRAILER}
+          component={WatchTrailer}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

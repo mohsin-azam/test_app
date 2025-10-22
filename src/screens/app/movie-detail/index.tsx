@@ -7,6 +7,7 @@ import { AppColors } from '~utils';
 import { height, width } from '~utils/dimensions';
 import { Movie, navProps } from '~utils/globalProps';
 import styles from './styles';
+import { getMovieTrailer } from '~backend/api';
 
 export default function MovieDetail({ navigation, route }: navProps) {
   const details: Movie = route?.params?.details;
@@ -16,6 +17,15 @@ export default function MovieDetail({ navigation, route }: navProps) {
     { name: 'Science', color: 'rgba(86, 76, 163, 1)' },
     { name: 'Fiction', color: 'rgba(205, 157, 15, 1)' },
   ];
+
+  const handleWatchTrailer = async () => {
+    const key = await getMovieTrailer(details.id);
+    if (key) {
+      navigation.navigate(ScreenNames.WATCH_TRAILER, { videoKey: key });
+    } else {
+      console.error('Trailer could not be fetched');
+    }
+  };
 
   return (
     <ScreenWrapper
@@ -64,7 +74,11 @@ export default function MovieDetail({ navigation, route }: navProps) {
             backgroundColor={AppColors.button}
           />
           <Spacer vertical={height(1)} />
-          <TouchableOpacity style={styles?.outlineButton} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles?.outlineButton}
+            activeOpacity={0.7}
+            onPress={handleWatchTrailer}
+          >
             <MaterialIcons
               name="play-arrow"
               size={width(6)}
