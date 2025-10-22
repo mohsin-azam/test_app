@@ -39,6 +39,7 @@ export default function App() {
   return (
     <Tab.Navigator
       screenOptions={{
+        tabBarHideOnKeyboard: true,
         headerShown: false,
         tabBarStyle: {
           backgroundColor: AppColors.primary,

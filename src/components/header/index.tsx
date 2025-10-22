@@ -9,6 +9,7 @@ import styles from './styles';
 
 interface HeaderProps {
   title: string;
+  subTitle: string;
   onBackPress: () => void;
   backgroundColor?: string;
   color?: string;
@@ -17,6 +18,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({
   title,
+  subTitle,
   onBackPress,
   backgroundColor = AppColors.white,
   color = AppColors.black,
@@ -40,10 +42,10 @@ const Header: React.FC<HeaderProps> = ({
 
       <View style={CommonStyles.alignItemCenter}>
         <AppText color={AppColors.black} size={4} fontFamily={'poppinsMedium'}>
-          The King’s Man
+          {title}
         </AppText>
         <AppText color={AppColors.button} size={3}>
-          In theaters december 22, 2021
+          {subTitle}
         </AppText>
       </View>
       <View style={styles?.equalizer} />

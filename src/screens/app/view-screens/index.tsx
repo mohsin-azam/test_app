@@ -27,7 +27,11 @@ export default function ViewScreens({ navigation }: navProps) {
         );
       }}
     >
-      <Header title="Movie Details" onBackPress={() => navigation?.goBack()} />
+      <Header
+        title="Movie Details"
+        subTitle="In theaters december 22, 2021"
+        onBackPress={() => navigation?.goBack()}
+      />
       <View style={styles.container}>
         <Spacer vertical={height(15)} />
         <AppText size={4} fontFamily="poppinsMedium" color={AppColors.black}>

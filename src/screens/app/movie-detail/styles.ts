@@ -6,7 +6,8 @@ import { height, width } from '~utils/dimensions';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: AppColors.white,
+    // backgroundColor: AppColors.white,
+    // height: height(100),
   },
   headerImage: {
     width: width(100),

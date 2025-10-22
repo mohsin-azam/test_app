@@ -1,27 +1,23 @@
-import React, { useState, useRef } from 'react';
+import { Armchair, Minus, Plus, X } from 'lucide-react-native';
+import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
+  Dimensions,
   ScrollView,
   StyleSheet,
-  Dimensions,
-  Animated,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import {
-  GestureHandlerRootView,
-  PinchGestureHandler,
-  State,
-} from 'react-native-gesture-handler';
-import { Armchair, Plus, Minus } from 'lucide-react-native';
+import { AppText, Header, ScreenWrapper } from '~components';
+import { AppColors } from '~utils';
+import { height, width } from '~utils/dimensions';
+import { navProps } from '~utils/globalProps';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const Booking = () => {
-  const [zoom, setZoom] = useState(1);
+const CinemaSeatBooking = ({ navigation }: navProps) => {
+  const [zoom, setZoom] = useState(0.7);
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const scale = useRef(new Animated.Value(1)).current;
-  const baseScale = useRef(1);
 
   // Define seat layout for each row
   const seatLayout = [
@@ -38,9 +34,18 @@ const Booking = () => {
   ];
 
   // Some seats are already booked (example data)
-  const bookedSeats = ['1-5', '2-8', '3-12', '4-15', '5-20', '7-10', '3-4'];
+  const bookedSeats = [
+    '1-5',
+    '2-8',
+    '3-12',
+    '4-15',
+    '5-20',
+    '7-10',
+    '3-4',
+    '2-3',
+  ];
 
-  const handleSeatPress = (seatId, isBooked) => {
+  const handleSeatPress = (seatId, isBooked, rowNum) => {
     if (isBooked) return;
 
     setSelectedSeats(prev => {
@@ -52,35 +57,45 @@ const Booking = () => {
     });
   };
 
-  const getSeatColor = (seatId, rowNum, isBooked) => {
-    if (selectedSeats.includes(seatId)) return '#FFD700'; // Golden
-    if (isBooked) return '#9CA3AF'; // Gray
-    if (rowNum === 10) return '#7C3AED'; // Purple (Premium)
-    return '#3B82F6'; // Blue (Normal)
+  const getSeatColor = (seatId: any, rowNum: any, isBooked: any) => {
+    if (selectedSeats.includes(seatId)) return '#DAA520';
+    if (isBooked) return '#D1D5DB';
+    if (rowNum === 10) return '#6366F1';
+    return AppColors.button;
   };
 
   const zoomIn = () => {
-    const newZoom = Math.min(zoom + 0.2, 2.5);
-    setZoom(newZoom);
+    setZoom(prev => Math.min(prev + 0.15, 1.3));
   };
 
   const zoomOut = () => {
-    const newZoom = Math.max(zoom - 0.2, 0.6);
-    setZoom(newZoom);
+    setZoom(prev => Math.max(prev - 0.15, 0.5));
   };
 
-  const onPinchEvent = Animated.event([{ nativeEvent: { scale: scale } }], {
-    useNativeDriver: false,
-  });
+  const clearSelection = () => {
+    setSelectedSeats([]);
+  };
 
-  const onPinchStateChange = event => {
-    if (event.nativeEvent.oldState === State.ACTIVE) {
-      const newZoom = baseScale.current * event.nativeEvent.scale;
-      const clampedZoom = Math.max(0.6, Math.min(2.5, newZoom));
-      setZoom(clampedZoom);
-      baseScale.current = clampedZoom;
-      scale.setValue(1);
-    }
+  const calculateTotal = () => {
+    let total = 0;
+    selectedSeats.forEach(seatId => {
+      const rowNum = parseInt(seatId.split('-')[0]);
+      if (rowNum === 10) {
+        total += 150; // VIP price
+      } else {
+        total += 50; // Regular price
+      }
+    });
+    return total;
+  };
+
+  const getSelectedByRow = () => {
+    const rowCounts = {};
+    selectedSeats.forEach(seatId => {
+      const rowNum = parseInt(seatId.split('-')[0]);
+      rowCounts[rowNum] = (rowCounts[rowNum] || 0) + 1;
+    });
+    return rowCounts;
   };
 
   const renderSeats = rowData => {
@@ -90,7 +105,7 @@ const Booking = () => {
     // Add left gap
     for (let i = 0; i < leftGap; i++) {
       seatElements.push(
-        <View key={`left-gap-${i}`} style={{ width: 24 * zoom }} />,
+        <View key={`left-gap-${i}`} style={{ width: 18 * zoom }} />,
       );
     }
 
@@ -105,7 +120,7 @@ const Booking = () => {
       seatElements.push(
         <TouchableOpacity
           key={seatId}
-          onPress={() => handleSeatPress(seatId, isBooked)}
+          onPress={() => handleSeatPress(seatId, isBooked, row)}
           style={[styles.seatContainer, { padding: 4 * zoom }]}
           activeOpacity={isBooked ? 1 : 0.6}
         >
@@ -114,13 +129,18 @@ const Booking = () => {
             color={getSeatColor(seatId, row, isBooked)}
             fill={getSeatColor(seatId, row, isBooked)}
           />
+          {/* <ChairSvg
+            width={18 * zoom}
+            height={17 * zoom}
+            fill={getSeatColor(seatId, row, isBooked)}
+          /> */}
         </TouchableOpacity>,
       );
     }
 
     // Center aisle
     seatElements.push(
-      <View key={`aisle-${row}`} style={{ width: 32 * zoom }} />,
+      <View key={`aisle-${row}`} style={{ width: 24 * zoom }} />,
     );
 
     // Right side seats
@@ -131,7 +151,7 @@ const Booking = () => {
       seatElements.push(
         <TouchableOpacity
           key={seatId}
-          onPress={() => handleSeatPress(seatId, isBooked)}
+          onPress={() => handleSeatPress(seatId, isBooked, row)}
           style={[styles.seatContainer, { padding: 4 * zoom }]}
           activeOpacity={isBooked ? 1 : 0.6}
         >
@@ -147,7 +167,7 @@ const Booking = () => {
     // Add right gap
     for (let i = 0; i < rightGap; i++) {
       seatElements.push(
-        <View key={`right-gap-${i}`} style={{ width: 24 * zoom }} />,
+        <View key={`right-gap-${i}`} style={{ width: 18 * zoom }} />,
       );
     }
 
@@ -155,203 +175,231 @@ const Booking = () => {
   };
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <PinchGestureHandler
-        onGestureEvent={onPinchEvent}
-        onHandlerStateChange={onPinchStateChange}
-      >
-        <Animated.View style={styles.gestureContainer}>
+    <ScreenWrapper statusBarColor={AppColors.white}>
+      <Header
+        title="Movie Details"
+        subTitle="March 5, 2021  I  12:30 hall 1"
+        onBackPress={() => navigation?.goBack()}
+      />
+
+      {/* Seat Selection Area */}
+      <View style={styles.seatSelectionContainer}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          horizontal
+        >
           <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
-            horizontal
           >
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-            >
-              <View style={styles.contentContainer}>
-                {/* Screen */}
-                <View style={styles.screenContainer}>
-                  <View
-                    style={[
-                      styles.screen,
-                      {
-                        height: 80 * zoom,
-                        borderRadius: 100 * zoom,
-                        borderWidth: 3 * zoom,
-                        borderBottomLeftRadius: 10 * zoom,
-                        borderBottomRightRadius: 10 * zoom,
-                      },
-                    ]}
-                  >
-                    <Text style={[styles.screenText, { fontSize: 18 * zoom }]}>
-                      SCREEN
-                    </Text>
-                  </View>
-                </View>
-
-                {/* Seat Grid */}
-                <View style={styles.seatsContainer}>
-                  {seatLayout.map(rowData => (
-                    <View
-                      key={rowData.row}
-                      style={[styles.row, { marginBottom: 8 * zoom }]}
-                    >
-                      <Text
-                        style={[
-                          styles.rowLabel,
-                          {
-                            width: 30 * zoom,
-                            fontSize: 16 * zoom,
-                            marginRight: 10 * zoom,
-                          },
-                        ]}
-                      >
-                        {rowData.row}
-                      </Text>
-                      <View style={styles.seatsRow}>
-                        {renderSeats(rowData)}
-                      </View>
-                    </View>
-                  ))}
-                </View>
-
-                {/* Legend */}
+            <View style={styles.contentContainer}>
+              {/* Screen */}
+              <View style={styles.screenContainer}>
                 <View
                   style={[
-                    styles.legend,
+                    styles.screen,
                     {
-                      marginTop: 30 * zoom,
-                      padding: 15 * zoom,
-                      borderRadius: 10 * zoom,
+                      height: 60 * zoom,
+                      borderRadius: 80 * zoom,
+                      borderWidth: 2.5 * zoom,
+                      borderBottomLeftRadius: 8 * zoom,
+                      borderBottomRightRadius: 8 * zoom,
                     },
                   ]}
                 >
-                  <View
-                    style={[
-                      styles.legendItem,
-                      { marginHorizontal: 10 * zoom, marginVertical: 5 * zoom },
-                    ]}
-                  >
-                    <Armchair size={20 * zoom} color="#3B82F6" fill="#3B82F6" />
-                    <Text
-                      style={[
-                        styles.legendText,
-                        { marginLeft: 8 * zoom, fontSize: 14 * zoom },
-                      ]}
-                    >
-                      Available
-                    </Text>
-                  </View>
-                  <View
-                    style={[
-                      styles.legendItem,
-                      { marginHorizontal: 10 * zoom, marginVertical: 5 * zoom },
-                    ]}
-                  >
-                    <Armchair size={20 * zoom} color="#FFD700" fill="#FFD700" />
-                    <Text
-                      style={[
-                        styles.legendText,
-                        { marginLeft: 8 * zoom, fontSize: 14 * zoom },
-                      ]}
-                    >
-                      Selected
-                    </Text>
-                  </View>
-                  <View
-                    style={[
-                      styles.legendItem,
-                      { marginHorizontal: 10 * zoom, marginVertical: 5 * zoom },
-                    ]}
-                  >
-                    <Armchair size={20 * zoom} color="#7C3AED" fill="#7C3AED" />
-                    <Text
-                      style={[
-                        styles.legendText,
-                        { marginLeft: 8 * zoom, fontSize: 14 * zoom },
-                      ]}
-                    >
-                      Premium
-                    </Text>
-                  </View>
-                  <View
-                    style={[
-                      styles.legendItem,
-                      { marginHorizontal: 10 * zoom, marginVertical: 5 * zoom },
-                    ]}
-                  >
-                    <Armchair size={20 * zoom} color="#9CA3AF" fill="#9CA3AF" />
-                    <Text
-                      style={[
-                        styles.legendText,
-                        { marginLeft: 8 * zoom, fontSize: 14 * zoom },
-                      ]}
-                    >
-                      Booked
-                    </Text>
-                  </View>
+                  <Text style={[styles.screenText, { fontSize: 14 * zoom }]}>
+                    SCREEN
+                  </Text>
                 </View>
+              </View>
 
-                {/* Selected Seats Info */}
-                {selectedSeats.length > 0 && (
+              {/* Seat Grid */}
+              <View style={styles.seatsContainer}>
+                {seatLayout.map(rowData => (
                   <View
-                    style={[
-                      styles.selectedInfo,
-                      {
-                        marginTop: 20 * zoom,
-                        padding: 15 * zoom,
-                        borderRadius: 10 * zoom,
-                      },
-                    ]}
+                    key={rowData.row}
+                    style={[styles.row, { marginBottom: 4 * zoom }]}
                   >
                     <Text
-                      style={[styles.selectedText, { fontSize: 16 * zoom }]}
+                      style={[
+                        styles.rowLabel,
+                        {
+                          width: 20 * zoom,
+                          fontSize: 12 * zoom,
+                          marginRight: 8 * zoom,
+                        },
+                      ]}
                     >
-                      Selected Seats: {selectedSeats.join(', ')} (
-                      {selectedSeats.length})
+                      {rowData.row}
                     </Text>
+                    <View style={styles.seatsRow}>{renderSeats(rowData)}</View>
                   </View>
-                )}
+                ))}
               </View>
-            </ScrollView>
+            </View>
           </ScrollView>
-        </Animated.View>
-      </PinchGestureHandler>
+        </ScrollView>
 
-      {/* Zoom Controls */}
-      <View style={styles.zoomControls}>
-        <TouchableOpacity
-          onPress={zoomIn}
-          style={styles.zoomButton}
-          disabled={zoom >= 2.5}
-          activeOpacity={0.7}
-        >
-          <Plus size={24} color={zoom >= 2.5 ? '#9CA3AF' : '#000'} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={zoomOut}
-          style={styles.zoomButton}
-          disabled={zoom <= 0.6}
-          activeOpacity={0.7}
-        >
-          <Minus size={24} color={zoom <= 0.6 ? '#9CA3AF' : '#000'} />
-        </TouchableOpacity>
+        {/* Zoom Controls */}
+        <View style={styles.zoomControls}>
+          <TouchableOpacity
+            onPress={zoomIn}
+            style={[
+              styles.zoomButton,
+              zoom >= 1.3 && styles.zoomButtonDisabled,
+            ]}
+            disabled={zoom >= 1.3}
+            activeOpacity={0.7}
+          >
+            <Plus size={24} color={zoom >= 1.3 ? '#D1D5DB' : '#000'} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={zoomOut}
+            style={[
+              styles.zoomButton,
+              zoom <= 0.5 && styles.zoomButtonDisabled,
+            ]}
+            disabled={zoom <= 0.5}
+            activeOpacity={0.7}
+          >
+            <Minus size={24} color={zoom <= 0.5 ? '#D1D5DB' : '#000'} />
+          </TouchableOpacity>
+        </View>
       </View>
-    </GestureHandlerRootView>
+
+      {/* Bottom Section */}
+      <View style={styles.bottomSection}>
+        {/* Legend */}
+        <View style={styles.legendContainer}>
+          <View style={styles.legendRow}>
+            <View style={styles.legendItem}>
+              <View style={styles.legendBox}>
+                <Armchair size={width(6)} fill={'#DAA520'} color={'#DAA520'} />
+              </View>
+
+              <AppText
+                size={3}
+                color={AppColors.lightText}
+                fontFamily="robotoMedium"
+              >
+                Selected
+              </AppText>
+            </View>
+            <View style={styles.legendItem}>
+              <View style={styles.legendBox}>
+                <Armchair size={width(6)} fill={'#D1D5DB'} color={'#D1D5DB'} />
+              </View>
+
+              <AppText size={3} color={'#D1D5DB'} fontFamily="robotoMedium">
+                Not available
+              </AppText>
+            </View>
+          </View>
+          <View style={styles.legendRow}>
+            <View style={styles.legendItem}>
+              <View style={styles.legendBox}>
+                <Armchair size={width(6)} fill={'#6366F1'} color={'#6366F1'} />
+              </View>
+
+              <AppText size={3} color={'#6366F1'} fontFamily="robotoMedium">
+                VIP (150$)
+              </AppText>
+            </View>
+
+            <View style={styles.legendItem}>
+              <View style={styles.legendBox}>
+                <Armchair
+                  size={width(6)}
+                  fill={AppColors.button}
+                  color={AppColors.button}
+                />
+              </View>
+
+              <AppText
+                size={3}
+                color={AppColors.button}
+                fontFamily="robotoMedium"
+              >
+                Regular (50 $)
+              </AppText>
+            </View>
+          </View>
+        </View>
+
+        {/* Selected Seats Info */}
+        {selectedSeats.length > 0 && (
+          <View style={styles.selectedContainer}>
+            <View style={styles.selectedInfo}>
+              <AppText
+                size={3.5}
+                color={AppColors.black}
+                fontFamily="poppinsMedium"
+                weight={'700'}
+              >
+                {selectedSeats.length} /{' '}
+                <AppText
+                  size={2.5}
+                  color={AppColors.black}
+                  fontFamily="poppinsRegular"
+                >
+                  {Object.keys(getSelectedByRow()).length} row
+                </AppText>
+              </AppText>
+              <TouchableOpacity
+                onPress={clearSelection}
+                style={styles.clearButton}
+              >
+                <X size={20} color="#000" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {/* Payment Section */}
+        <View style={styles.paymentContainer}>
+          <View style={styles.totalContainer}>
+            <AppText size={2.5} color={AppColors.black}>
+              Total Price
+            </AppText>
+            <AppText
+              size={4.5}
+              color={AppColors.black}
+              fontFamily="poppinsMedium"
+              weight={'700'}
+            >
+              $ {calculateTotal()}
+            </AppText>
+          </View>
+          <TouchableOpacity
+            style={[
+              styles.proceedButton,
+              selectedSeats.length === 0 && styles.proceedButtonDisabled,
+            ]}
+            disabled={selectedSeats.length === 0}
+            activeOpacity={0.8}
+          >
+            <AppText size={3.5} fontFamily="poppinsMedium">
+              Proceed to pay
+            </AppText>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ScreenWrapper>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#FFFFFF',
   },
-  gestureContainer: {
-    flex: 1,
+
+  seatSelectionContainer: {
+    position: 'relative',
+    height: height(50),
   },
   scrollView: {
     flex: 1,
@@ -361,21 +409,22 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 20,
+    paddingBottom: 40,
   },
   screenContainer: {
-    marginBottom: 30,
+    marginBottom: 20,
     alignItems: 'center',
   },
   screen: {
-    width: SCREEN_WIDTH - 40,
+    width: SCREEN_WIDTH - 60,
     backgroundColor: '#E5E7EB',
-    borderColor: '#3B82F6',
+    borderColor: '#60A5FA',
     justifyContent: 'center',
     alignItems: 'center',
   },
   screenText: {
-    fontWeight: 'bold',
-    color: '#6B7280',
+    fontWeight: '600',
+    color: '#9CA3AF',
     letterSpacing: 2,
   },
   seatsContainer: {
@@ -386,7 +435,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rowLabel: {
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: '#374151',
     textAlign: 'right',
   },
@@ -394,50 +443,118 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  seat: {
+    // Dynamic styles applied inline
+  },
   seatContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
-  legend: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    flexWrap: 'wrap',
-    backgroundColor: '#FFF',
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  legendText: {
-    color: '#374151',
-  },
-  selectedInfo: {
-    backgroundColor: '#FFD700',
-  },
-  selectedText: {
-    fontWeight: 'bold',
-    color: '#000',
-    textAlign: 'center',
-  },
   zoomControls: {
     position: 'absolute',
-    bottom: 30,
-    right: 30,
-    gap: 10,
+    bottom: height(2),
+    right: width(4),
+    gap: width(2),
+    flexDirection: 'row',
   },
   zoomButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#FFF',
+    width: width(8),
+    height: width(8),
+    borderRadius: width(4),
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  zoomButtonDisabled: {
+    opacity: 0.5,
+  },
+  bottomSection: {
+    flex: 1,
+    backgroundColor: AppColors.white,
+    paddingHorizontal: width(5),
+    paddingTop: height(4),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
     elevation: 5,
+  },
+  legendContainer: {
+    // marginBottom: 16,
+    // backgroundColor: 'blue',
+  },
+  legendRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  legendBox: {
+    marginRight: width(2),
+  },
+
+  selectedContainer: {
+    marginVertical: height(4),
+  },
+  selectedInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#F3F4F6',
+    paddingVertical: height(1),
+    paddingHorizontal: width(3),
+    borderRadius: width(3),
+    width: width(30),
+  },
+
+  clearButton: {
+    // padding: 4,
+  },
+  paymentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  totalContainer: {
+    backgroundColor: '#F3F4F6',
+    height: height(7),
+    width: width(27),
+    borderRadius: width(2.5),
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+    // borderRadius: 12,
+  },
+  // totalLabel: {
+  //   fontSize: 12,
+  //   color: '#6B7280',
+  //   marginBottom: 2,
+  // },
+  // totalPrice: {
+  //   fontSize: 24,
+  //   fontWeight: '700',
+  //   color: '#000',
+  // },
+  proceedButton: {
+    flex: 2,
+    backgroundColor: AppColors.button,
+    // paddingVertical: 18,
+    height: height(7),
+    borderRadius: width(2.5),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  proceedButtonDisabled: {
+    opacity: 0.5,
   },
 });
 
-export default Booking;
+export default CinemaSeatBooking;
