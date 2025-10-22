@@ -4,17 +4,12 @@ import YoutubePlayer from 'react-native-youtube-iframe';
 // import Orientation from 'react-native-orientation-locker';
 import { ScreenWrapper } from '~components';
 import { AppColors } from '~utils';
+import { navProps } from '~utils/globalProps';
 
-interface Props {
-  route: { params: { videoKey: string } };
-  navigation: any;
-}
-
-const WatchTrailer: React.FC<Props> = ({ route, navigation }) => {
-  const { videoKey } = route.params;
+const WatchTrailer: React.FC<navProps> = ({ route, navigation }) => {
+  const videoKey = route.params?.videoKey;
   const [playing, setPlaying] = useState(true);
 
-  // Lock orientation to landscape
   //   useFocusEffect(
   //     useCallback(() => {
   //       Orientation.lockToLandscape();
@@ -22,7 +17,6 @@ const WatchTrailer: React.FC<Props> = ({ route, navigation }) => {
   //     }, []),
   //   );
 
-  // Handle Android back button
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
@@ -45,7 +39,7 @@ const WatchTrailer: React.FC<Props> = ({ route, navigation }) => {
   );
 
   return (
-    <ScreenWrapper statusBarColor={AppColors.white}>
+    <ScreenWrapper statusBarColor={AppColors.black} barStyle="light-content">
       <View style={styles?.container}>
         <YoutubePlayer
           height={'100%'}
