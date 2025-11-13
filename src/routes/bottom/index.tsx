@@ -8,6 +8,7 @@ import { AppColors } from '~utils';
 import AppFonts from '~utils/app-fonts';
 import { height, width } from '~utils/dimensions';
 import styles from './styles';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
 
@@ -36,6 +37,7 @@ function MoreScreen() {
 }
 
 export default function App() {
+  const insets = useSafeAreaInsets();
   return (
     <Tab.Navigator
       screenOptions={{
@@ -46,7 +48,8 @@ export default function App() {
           borderTopLeftRadius: width(7),
           borderTopRightRadius: width(7),
           height: Platform.OS === 'ios' ? height(10) : height(9),
-          paddingBottom: Platform.OS === 'ios' ? height(3) : height(2),
+          paddingBottom:
+            Platform.OS === 'ios' ? height(3) : insets?.bottom + height(1),
           paddingTop: height(2),
           borderTopWidth: 0,
           elevation: 10,

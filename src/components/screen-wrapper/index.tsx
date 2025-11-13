@@ -1,16 +1,11 @@
 import { useIsFocused } from '@react-navigation/native';
 import React, { Fragment } from 'react';
-import {
-  ImageBackground,
-  SafeAreaView,
-  StatusBar,
-  View,
-  ViewStyle,
-} from 'react-native';
+import { ImageBackground, StatusBar, View, ViewStyle } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import styles from './styles';
 import { height } from '~utils/dimensions';
 import { AppColors } from '~utils';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Props {
   children?: any;

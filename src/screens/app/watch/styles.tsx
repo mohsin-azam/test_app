@@ -13,10 +13,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    // paddingVertical: height(3),
     backgroundColor: AppColors.white,
     paddingHorizontal: width(5),
-    height: height(11),
+    height: height(8),
   },
   headerText: {
     fontSize: width(4),

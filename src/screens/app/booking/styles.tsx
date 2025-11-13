@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
 
   selectedContainer: {
-    marginVertical: height(4),
+    marginVertical: height(2),
   },
   selectedInfo: {
     flexDirection: 'row',
